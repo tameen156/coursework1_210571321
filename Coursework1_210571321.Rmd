@@ -1,0 +1,127 @@
+---
+title: "MTH6139 Time Series"
+subtitle: "Coursework 1 210571321"
+author:
+- name: 210571321
+date: "March 2024"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r, echo=FALSE}
+htmltools::img(src = knitr::image_uri("QMlogo.png"), 
+               alt = 'logo', 
+               style = 'position:absolute; top:0; right:0; padding:10px; width:30%;')
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Required Lib
+```{r}
+library(prophet)
+```
+
+# Loadind the Dataset
+```{r}
+data(co2)
+```
+
+# Creating the DataFrame
+```{r}
+co2_Dataframe = data.frame(
+  ds = zoo::as.yearmon(time(co2)),
+  y = co2
+)
+```
+
+# Exploring the Dataset
+```{r}
+head(co2_Dataframe)
+```
+
+# Summary of the Dataset
+```{r}
+summary(co2_Dataframe)
+```
+
+# Prophet model
+```{r}
+Prophet_model = prophet::prophet(co2_Dataframe)
+```
+# future dates for forecasting 
+```{r}
+future_dates = prophet::make_future_dataframe(Prophet_model, periods = 8, freq = "quarter")
+```
+
+# forecast
+```{r}
+predict_ = predict(Prophet_model, future_dates)
+```
+
+# Plot 
+```{r}
+plot(Prophet_model, predict_)
+```
+
+# explain what co2 means (run ?co2),
+```{r}
+print("co2 is a dataset which contains monthly atmospheric CO2 concentrations derived from measurements at the Mauna Loa Observatory & it contains data from 1959 to 1997.")
+```
+
+# explain the purpose of the project,
+```{r}
+print("the purpose of this project is to explore & forecast the CO2 time series using Meta's Prophet forecasting system.")
+```
+
+# display some charts and explain what you see (trends, seasonality, relative size of these). Maybe run a linear regression to gain an understanding of the growth of the series in plain English.
+```{r}
+linearRegression_Model <- lm(co2 ~ time(co2))
+summary(linearRegression_Model)
+```
+
+```{r}
+plot(co2, xlab = "Year", ylab = "CO2 Concentration", main = "Atmospheric CO2 Concentrations")
+```
+
+The plot is showing an upward trend in atmospheric CO2 concentrations over the years
+
+# Look at numbers of interest inside R objects
+```{r}
+head(co2_Dataframe)
+```
+```{r}
+tail(co2_Dataframe)
+```
+
+```{r}
+summary(co2_Dataframe)
+```
+# consider different time-frames,
+```{r}
+co2_time_frame_1 <- window(co2, start = c(1959, 1), end = c(1978, 12))
+plot(co2_time_frame_1, xlab = "Year", ylab = "CO2 Concentration", main = "Atmospheric CO2 Concentrations (1959-1978)")
+```
+
+```{r}
+lm_co2_time_frame_1 <- lm(co2_time_frame_1 ~ time(co2_time_frame_1))
+summary(lm_co2_time_frame_1)
+```
+
+```{r}
+co2_time_frame_2 <- window(co2, start = c(1979, 1), end = c(1997, 12))
+plot(co2_time_frame_2, xlab = "Year", ylab = "CO2 Concentration", main = "Atmospheric CO2 Concentrations (1979-1997)")
+```
+```{r}
+lm_co2_time_frame_2<- lm(co2_time_frame_2 ~ time(co2_time_frame_2))
+summary(lm_co2_time_frame_2)
+```
+
+::: {.floatting}
+```{r echo=FALSE, out.extra='style="float:left; padding:20px"', out.width='20%'}
+knitr::include_graphics("SteveJobs.jpg")
+```
+
